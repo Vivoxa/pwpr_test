@@ -1,0 +1,7 @@
+docker_test_web:
+  image: 734147705192.dkr.ecr.eu-west-1.amazonaws.com/dockertest_web:latest
+  container_name: docker_test_web
+  tty: true
+  stdin_open: true
+  ports:
+    - "3000:3000"

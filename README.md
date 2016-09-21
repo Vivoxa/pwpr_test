@@ -1,2 +1,2 @@
 # pwpr_test
-For testing pwpr application
+For testing pwpr application.

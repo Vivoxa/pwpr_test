@@ -1,5 +1,5 @@
 docker_test_web:
-  image: 734147705192.dkr.ecr.eu-west-1.amazonaws.com/dockertest_web:v0.1.2
+  image: 734147705192.dkr.ecr.eu-west-1.amazonaws.com/dockertest_web:v0.1.5
   container_name: docker_test_web
   tty: true
   stdin_open: true

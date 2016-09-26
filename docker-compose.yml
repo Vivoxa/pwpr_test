@@ -1,0 +1,11 @@
+docker_test_web:
+  image: 734147705192.dkr.ecr.eu-west-1.amazonaws.com/dockertest_web:v0.1.6
+  container_name: docker_test_web
+  tty: true
+  stdin_open: true
+  environment:
+    - STORMPATH_CLIENT_APIKEY_ID=4I15BCLL3PPJ6U76WKWZ0DT9P
+    - STORMPATH_CLIENT_APIKEY_SECRET=Shg0tXv2mOND4y3YepY02DCqdQgmxubP2xMHSikmEQI
+    - STORMPATH_APPLICATION_HREF=https://api.stormpath.com/v1/applications/5e9duW3TaoZAEJ24lSfSD6
+  ports:
+    - "3000:3000"

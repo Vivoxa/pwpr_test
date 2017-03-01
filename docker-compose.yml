@@ -6,7 +6,7 @@ services:
     ports:
      - "15672:15672"
   app:
-    image: 054960824384.dkr.ecr.eu-west-1.amazonaws.com/pre-pwpr:v0.1.2
+    image: 054960824384.dkr.ecr.eu-west-1.amazonaws.com/pre-pwpr:test_110
     command: bash -c "bundle && RAILS_ENV=development bundle exec rake db:drop db:create db:migrate db:seed && RAILS_ENV=development bundle exec rails s -p 3000 -b '0.0.0.0'"
     container_name: pwpr_app
     tty: true

@@ -1,0 +1,63 @@
+version: '2'
+services:
+  queue_rabbit:
+    image: library/rabbitmq:3-management
+    container_name: queue_rabbitmq
+    ports:
+     - "15672:15672"
+  app:
+    image: 054960824384.dkr.ecr.eu-west-1.amazonaws.com/pre-pwpr:v0.1.2
+    command: bash -c "bundle && RAILS_ENV=development bundle exec rake db:drop db:create db:migrate db:seed && RAILS_ENV=development bundle exec rails s -p 3000 -b '0.0.0.0'"
+    container_name: pwpr_app
+    tty: true
+    stdin_open: true
+    environment:
+      - DOCKER_DB_HOST=pwpr_db_1
+      - DOCKER_IP=192.168.99.100
+      - SECRET_KEY_BASE=0c64deb461266abb601d62b86780c92e8220f1e80fcaa2faa48a8005b7c4cf5dba4f921f5be0e288558a0c3f10ce23302bb54f593a19e7b6260cdd29ebb04760
+      - AWS_ACCESS_KEY_ID=AKIAIEYHGYE3AVY27YHQ
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_REGION=eu-west-1
+      - SPREADSHEET_QUEUE_NAME=spreadsheet_processing_queue
+      - SPREADSHEET_QUEUE_HOST=queue_rabbitmq:5672
+      - SPREADSHEET_WORKER_LOG_PATH=log/spreadsheet_worker.log
+      - REPORTS_QUEUE_NAME=reports_email_queue
+      - REPORTS_QUEUE_HOST=queue_rabbitmq:5672
+      - REPORTS_WORKER_LOG_PATH=log/reports_email_worker.log
+      - FROM_EMAIL=notifications@app-pwpr.com
+      - SES_ENDPOINT=email-smtp.us-east-1.amazonaws.com
+      - APP_SO_SIGN_IN_URL=http://192.168.99.100:3000/scheme_operators/sign_in
+      - APP_CO_SIGN_IN_URL=http://192.168.99.100:3000/company_operators/sign_in
+      - BUNNY_USERNAME=guest
+      - BUNNY_PASSWORD=guest
+    volumes:
+      - ../pwpr:/pwpr
+    ports:
+      - "3000:3000"
+    links:
+      - db
+      - mail_server
+      - queue_rabbit
+    depends_on:
+      - db
+      - mail_server
+    networks:
+      default:
+        aliases:
+          - dev.pwpr.com
+  db:
+    image: library/mysql:5.6.22
+    container_name: pwpr_db_1
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=dev_pwpr_db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=admin
+  mail_server:
+      image: djfarrelly/maildev
+      container_name: pwpr_mail
+      ports:
+        - "1080:80"
+        - "1025:25"
